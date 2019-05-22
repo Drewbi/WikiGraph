@@ -1,18 +1,19 @@
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
 
-// Do you receive this message, over.
 public class WikiGraph implements CITS2200Project {
 
-    private Map<String, String> wikiGraph;
-
-    public WikiGraph() {
-        wikiGraph = new HashMap<>();
-    }
+    private Map<String, ArrayList> wikiGraph;
 
     @Override
     public void addEdge(String urlFrom, String urlTo) {
-
+        ArrayList linkedTo = new ArrayList();
+        if (wikiGraph.containsKey(urlFrom)) {
+            linkedTo = wikiGraph.get(urlFrom);
+        }
+        linkedTo.add(urlTo);
+        wikiGraph.put(urlFrom, linkedTo);
     }
 
     @Override
