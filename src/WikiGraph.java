@@ -30,30 +30,44 @@ public class WikiGraph implements CITS2200Project {
         int from = vertices.indexOf(urlFrom);
         int to = vertices.indexOf(urlTo);
         int[] colour = new int[vertices.size()];
-        for (int i = 0; i < vertices.size(); i ++){
+        for (int i : colour){
             colour[i] = 0;
         }
         int[] parent = new int[vertices.size()];
-        for (int i = 0; i < vertices.size(); i ++){
+        for (int i : colour){
             parent[i] = -1;
         }
         ArrayDeque q = new ArrayDeque();
-        if (wikiGraph.containsKey(from) && vertices.contains(to)) {
+        if (wikiGraph.containsKey(from) && vertices.contains(urlTo)) {
+            boolean found = false;
             q.add(from);
             while (!q.isEmpty()) {
-                Object k = q.pop();
+                int k = (int) q.pop();
+
                 for (int i = 0; i < wikiGraph.get(k).size(); i++) {
                     if (colour[i] == 0) {
                         q.add(wikiGraph.get(k).get(i));
-                        colour[i] = 1;
-                        parent[i] = (int) k;
+                        colour[(int) wikiGraph.get(k).get(i)] = 1;
+                        parent[(int) wikiGraph.get(k).get(i)] = k;
+                        if ((int) wikiGraph.get(k).get(i) == to) {
+                            found = true;
+                        }
                     }
+                }
+                if (found) {
+                    break;
                 }
             }
             if (parent[to] != -1) {
-                int count =
-                while (parent[k] != from) {
-
+                if (from == to) {
+                    shortest = 0;
+                    return shortest;
+                }
+                shortest = 1;
+                int curr = to;
+                while (parent[curr] != from) {
+                    curr = parent[curr];
+                    shortest ++;
                 }
             }
         }
