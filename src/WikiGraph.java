@@ -1,11 +1,13 @@
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.ArrayDeque;
+import java.util.Arrays;
 
 public class WikiGraph implements CITS2200Project {
 
     private HashMap<Integer, ArrayList> wikiGraph = new HashMap<>();
     private ArrayList vertices = new ArrayList();
+
     @Override
     public void addEdge(String urlFrom, String urlTo) {
         if(!vertices.contains(urlFrom)) {
@@ -28,34 +30,36 @@ public class WikiGraph implements CITS2200Project {
     public int getShortestPath(String urlFrom, String urlTo) {
         int shortest = -1;
         int from = vertices.indexOf(urlFrom);
+        System.out.println("From index: " + from);
         int to = vertices.indexOf(urlTo);
+        System.out.println("To index: " + to);
         int[] colour = new int[vertices.size()];
-        for (int i : colour){
+        for (int i = 0; i < vertices.size(); i ++){
             colour[i] = 0;
         }
         int[] parent = new int[vertices.size()];
-        for (int i : colour){
+        for (int i = 0; i < vertices.size(); i ++){
             parent[i] = -1;
         }
         ArrayDeque q = new ArrayDeque();
+        System.out.println(wikiGraph);
+        System.out.println(vertices);
         if (wikiGraph.containsKey(from) && vertices.contains(urlTo)) {
             boolean found = false;
             q.add(from);
             while (!q.isEmpty()) {
                 int k = (int) q.pop();
-
-                for (int i = 0; i < wikiGraph.get(k).size(); i++) {
-                    if (colour[i] == 0) {
-                        q.add(wikiGraph.get(k).get(i));
-                        colour[(int) wikiGraph.get(k).get(i)] = 1;
-                        parent[(int) wikiGraph.get(k).get(i)] = k;
-                        if ((int) wikiGraph.get(k).get(i) == to) {
-                            found = true;
+                if (wikiGraph.containsKey(k)) {
+                    for (int i = 0; i < wikiGraph.get(k).size(); i++) {
+                        int child = (int) wikiGraph.get(k).get(i);
+                        if (colour[child] == 0) {
+                            q.add(child);
+                            colour[child] = 1;
+                            parent[child] = k;
                         }
+                        if (child == to) found = true;
                     }
-                }
-                if (found) {
-                    break;
+                    if (found) break;
                 }
             }
             if (parent[to] != -1) {
