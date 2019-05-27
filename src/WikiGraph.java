@@ -1,11 +1,13 @@
 import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.ArrayDeque;
+import java.util.Arrays;
 
 public class WikiGraph implements CITS2200Project {
 
     private HashMap<Integer, ArrayList> wikiGraph = new HashMap<>();
     private ArrayList vertices = new ArrayList();
+
     @Override
     public void addEdge(String urlFrom, String urlTo) {
         if(!vertices.contains(urlFrom)) {
@@ -28,7 +30,9 @@ public class WikiGraph implements CITS2200Project {
     public int getShortestPath(String urlFrom, String urlTo) {
         int shortest = -1;
         int from = vertices.indexOf(urlFrom);
+        System.out.println("From index: " + from);
         int to = vertices.indexOf(urlTo);
+        System.out.println("To index: " + to);
         int[] colour = new int[vertices.size()];
         for (int i = 0; i < vertices.size(); i ++){
             colour[i] = 0;
@@ -38,22 +42,36 @@ public class WikiGraph implements CITS2200Project {
             parent[i] = -1;
         }
         ArrayDeque q = new ArrayDeque();
-        if (wikiGraph.containsKey(from) && vertices.contains(to)) {
+        System.out.println(wikiGraph);
+        System.out.println(vertices);
+        if (wikiGraph.containsKey(from) && vertices.contains(urlTo)) {
+            boolean found = false;
             q.add(from);
             while (!q.isEmpty()) {
-                Object k = q.pop();
-                for (int i = 0; i < wikiGraph.get(k).size(); i++) {
-                    if (colour[i] == 0) {
-                        q.add(wikiGraph.get(k).get(i));
-                        colour[i] = 1;
-                        parent[i] = (int) k;
+                int k = (int) q.pop();
+                if (wikiGraph.containsKey(k)) {
+                    for (int i = 0; i < wikiGraph.get(k).size(); i++) {
+                        int child = (int) wikiGraph.get(k).get(i);
+                        if (colour[child] == 0) {
+                            q.add(child);
+                            colour[child] = 1;
+                            parent[child] = k;
+                        }
+                        if (child == to) found = true;
                     }
+                    if (found) break;
                 }
             }
             if (parent[to] != -1) {
-                int count =
-                while (parent[k] != from) {
-
+                if (from == to) {
+                    shortest = 0;
+                    return shortest;
+                }
+                shortest = 1;
+                int curr = to;
+                while (parent[curr] != from) {
+                    curr = parent[curr];
+                    shortest ++;
                 }
             }
         }
