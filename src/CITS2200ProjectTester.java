@@ -1,13 +1,15 @@
-import java.io.*;
-import java.util.*;
+import java.io.File;
+import java.io.BufferedReader;
+import java.io.FileReader;
 
 public class CITS2200ProjectTester {
-	private static void loadGraph(CITS2200Project project, String path) {
+	private static void loadGraph(CITS2200Project project, String fileName) {
 		// The graph is in the following format:
 		// Every pair of consecutive lines represent a directed edge.
 		// The edge goes from the URL in the first line to the URL in the second line.
+		File file = new File("src");
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(path));
+			BufferedReader reader = new BufferedReader(new FileReader(file.getAbsolutePath() + "/" + fileName));
 			while (reader.ready()) {
 				String from = reader.readLine();
 				String to = reader.readLine();
@@ -21,11 +23,11 @@ public class CITS2200ProjectTester {
 
 	public static void main(String[] args) {
 		// Change this to be the path to the graph file.
-		String pathToGraphFile = "/Users/dru/Documents/DSA/WikiDisance/src/example_graph";
+		String GraphFileName = ("example_graph");
 		// Create an instance of your implementation.
 		CITS2200Project proj = new WikiGraph();
 		// Load the graph into the project.
-		loadGraph(proj, pathToGraphFile);
+		loadGraph(proj, GraphFileName);
 		// Write your own tests!
 		int res = proj.getShortestPath("/wiki/Flow_network", "/wiki/Approximate_max-flow_min-cut_theorem");
 		System.out.println(res);
