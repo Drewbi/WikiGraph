@@ -1,6 +1,7 @@
 import java.io.File;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.Arrays;
 
 public class CITS2200ProjectTester {
 	private static void loadGraph(CITS2200Project project, String fileName) {
@@ -23,13 +24,16 @@ public class CITS2200ProjectTester {
 
 	public static void main(String[] args) {
 		// Change this to be the path to the graph file.
-		String GraphFileName = ("example_graph");
+		String GraphFileName = ("hamiltonian2.txt");
 		// Create an instance of your implementation.
 		CITS2200Project proj = new WikiGraph();
 		// Load the graph into the project.
 		loadGraph(proj, GraphFileName);
-		// Write your own tests!
-		int res = proj.getShortestPath("/wiki/Flow_network", "/wiki/Approximate_max-flow_min-cut_theorem");
-		System.out.println(res);
+
+		System.out.println("\t\tHamiltonian path");
+		System.out.println("---------------------------");
+		String[] res = proj.getHamiltonianPath();
+		System.out.println(Arrays.toString(res));
+		System.out.println("---------------------------");
 	}
 }
