@@ -24,16 +24,20 @@ public class CITS2200ProjectTester {
 
 	public static void main(String[] args) {
 		// Change this to be the path to the graph file.
-		String GraphFileName = ("hamiltonian2.txt");
+		String GraphFileName = ("tester.txt");
 		// Create an instance of your implementation.
 		CITS2200Project proj = new WikiGraph();
 		// Load the graph into the project.
 		loadGraph(proj, GraphFileName);
-
+		System.out.println("\t\tShortest path");
+		System.out.println("---------------------------");
+		int shortest = proj.getShortestPath("a", "l");
+		System.out.println(shortest);
+		System.out.println("---------------------------");
 		System.out.println("\t\tHamiltonian path");
 		System.out.println("---------------------------");
-		String[] res = proj.getHamiltonianPath();
-		System.out.println(Arrays.toString(res));
+		String[] ham = proj.getHamiltonianPath();
+		System.out.println(Arrays.toString(ham));
 		System.out.println("---------------------------");
 	}
 }
