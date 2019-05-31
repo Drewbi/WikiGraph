@@ -2,6 +2,7 @@ import java.io.File;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.Arrays;
+import java.lang.System;
 
 public class CITS2200ProjectTester {
 	private static void loadGraph(CITS2200Project project, String fileName) {
@@ -24,12 +25,14 @@ public class CITS2200ProjectTester {
 
 	public static void main(String[] args) {
 		// Change this to be the path to the graph file.
-		String GraphFileName = ("tester.txt");
+		String GraphFileName = ("hamiltonian2.txt");
 		// Create an instance of your implementation.
 		CITS2200Project proj = new WikiGraph();
 		// Load the graph into the project.
 		loadGraph(proj, GraphFileName);
-		String[] yeet = proj.getCenters();
+		long initTime = System.nanoTime();
+		String[] yeet = proj.getHamiltonianPath();
+		System.out.println((System.nanoTime() - initTime)/1000);
 		System.out.println(Arrays.toString(yeet));
 	}
 }
