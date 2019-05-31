@@ -27,12 +27,10 @@ public class WikiGraph implements CITS2200Project {
         int shortest = -1;
         int from = vertices.indexOf(urlFrom);
         int to = vertices.indexOf(urlTo);
-        int[] colour = new int[vertices.size()];
-        for (int i = 0; i < vertices.size(); i ++){
-            colour[i] = 0;
-        }
-        int[] parent = new int[vertices.size()];
-        for (int i = 0; i < vertices.size(); i ++){
+        int numVert = vertices.size();
+        int[] colour = new int[numVert];
+        int[] parent = new int[numVert];
+        for (int i = 0; i < numVert; i ++){
             parent[i] = -1;
         }
         ArrayDeque q = new ArrayDeque();
@@ -70,16 +68,62 @@ public class WikiGraph implements CITS2200Project {
         return shortest;
     }
 
-    @Override
-    public int getLongestPath(String urlRoot){
+    private int getLongestPath(int root){
+        int numVert = vertices.size();
+        int[] parent = new int[numVert];
+        for (int i = 0; i < numVert; i ++){
+            parent[i] = -1;
+        }
+        int[] colour = new int[numVert];
+        int[] distance = new int[numVert];
+        ArrayDeque q = new ArrayDeque();
 
-        return 0;
+        if (wikiGraph.containsKey(root)) {
+            q.add(root);
+            while (!q.isEmpty()) {
+                int k = (int) q.pop();
+                if (wikiGraph.containsKey(k)) {
+                    for (int i = 0; i < wikiGraph.get(k).size(); i++) {
+                        int child = (int) wikiGraph.get(k).get(i);
+                        if (colour[child] == 0) {
+                            q.add(child);
+                            colour[child] = 1;
+                            parent[child] = k;
+                            distance[child] = distance[parent[child]] + 1;
+                        }
+                    }
+                }
+            }
+        } else return -1;
+        int max = 0;
+        for (int i = 0; i < distance.length; i++) {
+            if (distance[i] > max) {
+                max = distance[i];
+            }
+        }
+        return max;
     }
 
     @Override
     public String[] getCenters() {
-
-        return new String[0];
+        System.out.println(wikiGraph);
+        System.out.println(vertices);
+        int minMax = vertices.size();
+        ArrayList<Integer> middles = new ArrayList<>();
+        for (int i = 0; i < vertices.size(); i ++) {
+            int max = getLongestPath(i);
+            if (max < minMax && max > 0) {
+                System.out.println("max of " + i + " is " + max);
+                minMax = max;
+                middles.clear();
+                middles.add(i);
+            } else if (max == minMax) middles.add(i);
+        }
+        String[] result = new String[middles.size()];
+        for (int i = 0; i < middles.size(); i++) {
+            result[i] = (String) vertices.get(middles.get(i));
+        }
+        return result;
     }
 
     @Override

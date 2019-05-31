@@ -19,14 +19,6 @@ public interface CITS2200Project {
     int getShortestPath(String urlFrom, String urlTo);
 
     /**
-     * Finds the most distant vertex from a starting point and gives the distance.
-     *
-     * @param urlRoot the URL where the path should start.
-     * @return the length of the shortest path in number of links followed.
-     */
-    int getLongestPath(String urlRoot);
-
-    /**
      * Finds all the centers of the page graph. The order of pages
      * in the output does not matter. Any order is correct as long as
      * all the centers are in the array, and no pages that aren't centers
