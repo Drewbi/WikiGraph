@@ -3,6 +3,7 @@ import java.util.*;
 public class WikiGraph implements CITS2200Project {
 
     private HashMap<Integer, ArrayList> wikiGraph = new HashMap<>();
+    private HashMap<Integer, ArrayList> wikiGraphTranspose = new HashMap<>();
     private ArrayList vertices = new ArrayList();
 
     public void addEdge(String urlFrom, String urlTo) {
@@ -20,11 +21,25 @@ public class WikiGraph implements CITS2200Project {
         }
         linkedTo.add(to);
         wikiGraph.put(from, linkedTo);
+
+        //Transpose graph formation
+        int fromT = vertices.indexOf(urlTo);
+        int toT = vertices.indexOf(urlFrom);
+        ArrayList linkedToT = new ArrayList();
+        if (wikiGraphTranspose.containsKey(fromT)) {
+            linkedToT = wikiGraphTranspose.get(fromT);
+        }
+        linkedToT.add(toT);
+        wikiGraphTranspose.put(fromT, linkedToT);
     }
 
     @Override
     public int getShortestPath(String urlFrom, String urlTo) {
         int shortest = -1;
+        if (urlFrom == urlTo) {
+            shortest = 0;
+            return shortest;
+        }
         int from = vertices.indexOf(urlFrom);
         int to = vertices.indexOf(urlTo);
         int numVert = vertices.size();
@@ -53,10 +68,6 @@ public class WikiGraph implements CITS2200Project {
                 }
             }
             if (parent[to] != -1) {
-                if (from == to) {
-                    shortest = 0;
-                    return shortest;
-                }
                 shortest = 1;
                 int curr = to;
                 while (parent[curr] != from) {
@@ -126,8 +137,65 @@ public class WikiGraph implements CITS2200Project {
 
     @Override
     public String[][] getStronglyConnectedComponents() {
+        Stack s = new Stack();
+        int[] colour = new int[vertices.size()];
+        for (int i : colour) i = 0;
+        DFS((int) wikiGraph.keySet().toArray()[0], s, colour);
+        for(int i = 0; i < colour.length; i ++) {
+            if (colour[i] == 0) {
+                if (wikiGraph.containsKey(i)){
+                    DFS(i, s, colour);
+                }
+            }
+        }
+        int[] colour2 = new int[vertices.size()];
+        for (int i : colour2) i = 0;
+        ArrayList<String[]> result = new ArrayList<>();
+        while (!s.empty()) {
+            int focus = (int) s.pop();
+            if (colour2[focus] == 0) {
+                ArrayList SCC = new ArrayList();
+                DFST(focus, colour2, SCC);
+                String[] SCCText = new String[SCC.size()];
+                for(int i = 0; i < SCC.size(); i++) {
+                    SCCText[i] = (String) vertices.get((int) SCC.get(i));
+                }
+                result.add(SCCText);
+            }
+        }
+        String[][] finalResult = new String[result.size()][];
+        for (int i = 0; i < result.size(); i ++) {
+            finalResult[i] = result.get(i);
+        }
+        return finalResult;
+    }
 
-        return new String[0][];
+    public Stack DFS(int v, Stack s, int[] colour) {
+        colour[v] = 1;
+        for (int i = 0; i < wikiGraph.get(v).size(); i ++) {
+            int child = (int) wikiGraph.get(v).get(i);
+            if (colour[child] == 0) {
+                if (wikiGraph.containsKey(child)) DFS(child, s, colour);
+                else {
+                    s.push(child);
+                    colour[child] = 1;
+                }
+            }
+        }
+        s.push(v);
+        return s;
+    }
+
+    public ArrayList DFST(int focus, int[] colour2, ArrayList SCC) {
+        colour2[focus] = 1;
+        SCC.add(focus);
+        if (wikiGraphTranspose.containsKey(focus)) {
+            for (int i = 0; i < wikiGraphTranspose.get(focus).size(); i++) {
+                int child = (int) wikiGraphTranspose.get(focus).get(i);
+                if (colour2[child] == 0) DFST(child, colour2, SCC);
+            }
+        }
+        return SCC;
     }
 
     @Override

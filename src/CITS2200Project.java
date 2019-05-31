@@ -6,7 +6,7 @@ public interface CITS2200Project {
      * @param urlFrom the URL which has a link to urlTo.
      * @param urlTo the URL which urlFrom has a link to.
      */
-    void addEdge(String urlFrom, String urlTo);
+    public void addEdge(String urlFrom, String urlTo);
 
     /**
      * Finds the shortest path in number of links between two pages.
@@ -16,7 +16,7 @@ public interface CITS2200Project {
      * @param urlTo the URL where the path should end.
      * @return the length of the shortest path in number of links followed.
      */
-    int getShortestPath(String urlFrom, String urlTo);
+    public int getShortestPath(String urlFrom, String urlTo);
 
     /**
      * Finds all the centers of the page graph. The order of pages
@@ -26,7 +26,7 @@ public interface CITS2200Project {
      *
      * @return an array containing all the URLs that correspond to pages that are centers.
      */
-    String[] getCenters();
+    public String[] getCenters();
 
     /**
      * Finds all the strongly connected components of the page graph.
@@ -38,7 +38,7 @@ public interface CITS2200Project {
      *
      * @return an array containing every strongly connected component.
      */
-    String[][] getStronglyConnectedComponents();
+    public String[][] getStronglyConnectedComponents();
 
     /**
      * Finds a Hamiltonian path in the page graph. There may be many
@@ -52,5 +52,5 @@ public interface CITS2200Project {
      *
      * @return a Hamiltonian path of the page graph.
      */
-    String[] getHamiltonianPath();
+    public String[] getHamiltonianPath();
 }
