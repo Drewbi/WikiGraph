@@ -36,14 +36,14 @@ public class WikiGraph implements CITS2200Project {
     @Override
     public int getShortestPath(String urlFrom, String urlTo) {
         int shortest = -1;
-        // checking if urlFrom and urlTo are the same, returning 0 if they are
-        if (urlFrom == urlTo) {
-            shortest = 0;
-            return shortest;
-        }
         //retrieving the urls' unique indices
         int from = vertices.indexOf(urlFrom);
         int to = vertices.indexOf(urlTo);
+        // checking if urlFrom and urlTo are the same, returning 0 if they are
+        if (from == to) {
+            shortest = 0;
+            return shortest;
+        }
         int numVert = vertices.size();
         int[] parent = new int[numVert];
         int[] colour = new int[numVert];
