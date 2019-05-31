@@ -36,22 +36,27 @@ public class WikiGraph implements CITS2200Project {
     @Override
     public int getShortestPath(String urlFrom, String urlTo) {
         int shortest = -1;
+        // checking if urlFrom and urlTo are the same, returning 0 if they are
         if (urlFrom == urlTo) {
             shortest = 0;
             return shortest;
         }
+        //retrieving the urls' unique indices
         int from = vertices.indexOf(urlFrom);
         int to = vertices.indexOf(urlTo);
         int numVert = vertices.size();
         int[] parent = new int[numVert];
         int[] colour = new int[numVert];
+        //setting all parents to -1 (representing undetermined)
         for (int i = 0; i < numVert; i ++){
             parent[i] = -1;
         }
+        //BFS
         ArrayDeque q = new ArrayDeque();
         if (wikiGraph.containsKey(from) && vertices.contains(urlTo)) {
             boolean found = false;
             q.add(from);
+            colour[from] = 1;
             while (!q.isEmpty()) {
                 int k = (int) q.pop();
                 if (wikiGraph.containsKey(k)) {
@@ -67,7 +72,11 @@ public class WikiGraph implements CITS2200Project {
                     if (found) break;
                 }
             }
+            //if parent[to] == -1 : urlTo was never reached from urlFrom
+            //therefore return -1
             if (parent[to] != -1) {
+                //Tracing back through parents, adding one to
+                // shortest each time
                 shortest = 1;
                 int curr = to;
                 while (parent[curr] != from) {
@@ -76,6 +85,8 @@ public class WikiGraph implements CITS2200Project {
                 }
             }
         }
+        else System.out.print(urlFrom + " or " + urlTo + " may not exist in the graph, or " + urlFrom +
+                "may not contain any links");
         return shortest;
     }
 
@@ -138,9 +149,10 @@ public class WikiGraph implements CITS2200Project {
     @Override
     public String[][] getStronglyConnectedComponents() {
         Stack s = new Stack();
-        int[] colour = new int[vertices.size()];
-        for (int i : colour) i = 0;
-        DFS((int) wikiGraph.keySet().toArray()[0], s, colour);
+        int vSize = vertices.size();
+        int[] colour = new int[vSize];
+        //ensures all vertices are seen and added to the stack
+        //if a path ends, a new one is created
         for(int i = 0; i < colour.length; i ++) {
             if (colour[i] == 0) {
                 if (wikiGraph.containsKey(i)){
@@ -148,28 +160,35 @@ public class WikiGraph implements CITS2200Project {
                 }
             }
         }
-        int[] colour2 = new int[vertices.size()];
-        for (int i : colour2) i = 0;
+        int[] colour2 = new int[vSize];
         ArrayList<String[]> result = new ArrayList<>();
         while (!s.empty()) {
             int focus = (int) s.pop();
             if (colour2[focus] == 0) {
+                //list of indexes of vertices in a given SCC
+                // refreshed for each new component
                 ArrayList SCC = new ArrayList();
                 DFST(focus, colour2, SCC);
-                String[] SCCText = new String[SCC.size()];
-                for(int i = 0; i < SCC.size(); i++) {
-                    SCCText[i] = (String) vertices.get((int) SCC.get(i));
+                //converting SCC array list of vertices to array of
+                // corresponding urls
+                int SCCSize = SCC.size();
+                String[] SCCString = new String[SCCSize];
+                for(int i = 0; i < SCCSize; i++) {
+                    SCCString[i] = (String) vertices.get((int) SCC.get(i));
                 }
-                result.add(SCCText);
+                result.add(SCCString);
             }
         }
-        String[][] finalResult = new String[result.size()][];
-        for (int i = 0; i < result.size(); i ++) {
+        //converting array list of SCCStrings to array of arrays
+        int resultSize = result.size();
+        String[][] finalResult = new String[resultSize][];
+        for (int i = 0; i < resultSize; i ++) {
             finalResult[i] = result.get(i);
         }
         return finalResult;
     }
 
+    //depth-first search method for original graph
     public Stack DFS(int v, Stack s, int[] colour) {
         colour[v] = 1;
         for (int i = 0; i < wikiGraph.get(v).size(); i ++) {
@@ -182,10 +201,12 @@ public class WikiGraph implements CITS2200Project {
                 }
             }
         }
+        //vertices are added to the stack in order of their finish times
         s.push(v);
         return s;
     }
 
+    //depth-first search method for transpose graph
     public ArrayList DFST(int focus, int[] colour2, ArrayList SCC) {
         colour2[focus] = 1;
         SCC.add(focus);

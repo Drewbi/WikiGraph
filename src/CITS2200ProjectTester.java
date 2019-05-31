@@ -25,14 +25,14 @@ public class CITS2200ProjectTester {
 
 	public static void main(String[] args) {
 		// Change this to be the path to the graph file.
-		String GraphFileName = ("hamiltonian2.txt");
+		String GraphFileName = ("medium_graph.txt");
 		// Create an instance of your implementation.
 		CITS2200Project proj = new WikiGraph();
 		// Load the graph into the project.
 		loadGraph(proj, GraphFileName);
 		long initTime = System.nanoTime();
-		String[] yeet = proj.getHamiltonianPath();
+		String[][] yeet = proj.getStronglyConnectedComponents();
 		System.out.println((System.nanoTime() - initTime)/1000);
-		System.out.println(Arrays.toString(yeet));
+		System.out.println(Arrays.deepToString(yeet));
 	}
 }
