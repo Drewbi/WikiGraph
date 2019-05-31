@@ -24,12 +24,16 @@ public class CITS2200ProjectTester {
 
 	public static void main(String[] args) {
 		// Change this to be the path to the graph file.
-		String GraphFileName = ("tester.txt");
+		String GraphFileName = ("medium_graph.txt");
 		// Create an instance of your implementation.
 		CITS2200Project proj = new WikiGraph();
 		// Load the graph into the project.
 		loadGraph(proj, GraphFileName);
-		String[] yeet = proj.getCenters();
-		System.out.println(Arrays.toString(yeet));
+
+		System.out.println("\t\tStrongly connected components");
+		System.out.println("---------------------------");
+		String[][] res = proj.getStronglyConnectedComponents();
+		System.out.println(Arrays.deepToString(res));
+		System.out.println("---------------------------");
 	}
 }
