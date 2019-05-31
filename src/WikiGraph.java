@@ -1,14 +1,10 @@
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.ArrayDeque;
-import java.util.Arrays;
+import java.util.*;
 
 public class WikiGraph implements CITS2200Project {
 
     private HashMap<Integer, ArrayList> wikiGraph = new HashMap<>();
     private ArrayList vertices = new ArrayList();
 
-    @Override
     public void addEdge(String urlFrom, String urlTo) {
         if(!vertices.contains(urlFrom)) {
             vertices.add(urlFrom);
@@ -31,12 +27,10 @@ public class WikiGraph implements CITS2200Project {
         int shortest = -1;
         int from = vertices.indexOf(urlFrom);
         int to = vertices.indexOf(urlTo);
-        int[] colour = new int[vertices.size()];
-        for (int i = 0; i < vertices.size(); i ++){
-            colour[i] = 0;
-        }
-        int[] parent = new int[vertices.size()];
-        for (int i = 0; i < vertices.size(); i ++){
+        int numVert = vertices.size();
+        int[] parent = new int[numVert];
+        int[] colour = new int[numVert];
+        for (int i = 0; i < numVert; i ++){
             parent[i] = -1;
         }
         ArrayDeque q = new ArrayDeque();
@@ -67,19 +61,67 @@ public class WikiGraph implements CITS2200Project {
                 int curr = to;
                 while (parent[curr] != from) {
                     curr = parent[curr];
-                    System.out.println(vertices.get(curr) + ". index " + curr);
                     shortest ++;
                 }
-                System.out.println(vertices.get(from) + ". index " + from);
             }
         }
         return shortest;
     }
 
+    private int getLongestPath(int root){
+        int numVert = vertices.size();
+        int[] parent = new int[numVert];
+        int[] colour = new int[numVert];
+        int[] distance = new int[numVert];
+        for (int i = 0; i < numVert; i ++){
+            parent[i] = -1;
+        }
+        ArrayDeque q = new ArrayDeque();
+        if (wikiGraph.containsKey(root)) {
+            q.add(root);
+            while (!q.isEmpty()) {
+                int k = (int) q.pop();
+                if (wikiGraph.containsKey(k)) {
+                    for (int i = 0; i < wikiGraph.get(k).size(); i++) {
+                        int child = (int) wikiGraph.get(k).get(i);
+                        if (colour[child] == 0) {
+                            q.add(child);
+                            colour[child] = 1;
+                            parent[child] = k;
+                            distance[child] = distance[parent[child]] + 1;
+                        }
+                    }
+                }
+            }
+        } else return -1;
+        int max = 0;
+        for (int i = 0; i < distance.length; i++) {
+            if (distance[i] > max) {
+                max = distance[i];
+            }
+        }
+        return max;
+    }
+
     @Override
     public String[] getCenters() {
-
-        return new String[0];
+        System.out.println(wikiGraph);
+        System.out.println(vertices);
+        int minMax = vertices.size();
+        ArrayList<Integer> middles = new ArrayList<>();
+        for (int i = 0; i < vertices.size(); i ++) {
+            int max = getLongestPath(i);
+            if (max < minMax && max > 0) {
+                minMax = max;
+                middles.clear();
+                middles.add(i);
+            } else if (max == minMax) middles.add(i);
+        }
+        String[] result = new String[middles.size()];
+        for (int i = 0; i < middles.size(); i++) {
+            result[i] = (String) vertices.get(middles.get(i));
+        }
+        return result;
     }
 
     @Override
@@ -90,12 +132,14 @@ public class WikiGraph implements CITS2200Project {
 
     @Override
     public String[] getHamiltonianPath() {
-        System.out.println(vertices);
-        System.out.println(wikiGraph);
-        int[] path = new int[vertices.size()];
+        int numVert = vertices.size();
+        int[] path = new int[numVert];
         int currPath = 0;
         boolean vertValid = true;
-        while (currPath < vertices.size()) {
+        HashSet<Integer> pendants = new HashSet<>();
+
+        while (currPath < numVert) {
+
             // Make sure candidate hasn't been used before
             for (int i = 0; i < currPath; i ++) {
                 if (path[i] == path[currPath]) {
@@ -104,8 +148,17 @@ public class WikiGraph implements CITS2200Project {
                 }
             }
 
+            // Check to see if vertex has edges that aren't just itself
+            if (vertValid && currPath < numVert) {
+                ArrayList currConnections = wikiGraph.get(path[currPath]);
+                if (currConnections != null && currConnections.size() == 1) {
+                        int onlyEdge = (int) currConnections.get(0);
+                        if (onlyEdge == path[currPath]) pendants.add(path[currPath]); // Only edge is to itself
+                }
+            }
+
             // Make sure there is a connection from previous to candidate
-            if (currPath > 0 && vertValid != false) {
+            if (vertValid && currPath != 0) {
                 ArrayList prevConnections = wikiGraph.get(path[currPath - 1]);
                 if (prevConnections != null) {
                     for (Object connection : prevConnections) {
@@ -115,25 +168,27 @@ public class WikiGraph implements CITS2200Project {
                         }
                         vertValid = false;
                     }
-                } else {
-                    vertValid = false;
-                }
+                } else vertValid = false;
             }
-            if (currPath == 0 && path[currPath] >= vertices.size()){
-                System.out.println("No solution");
+
+            // If all root nodes have been tried or if more than one pendant is found
+            if (currPath == 0 && path[currPath] == numVert || pendants.size() > 1) {
+                System.out.println("No solutions found");
                 return new String[0];
             }
-            if (vertValid && path[currPath] < vertices.size()) {
+
+            if (vertValid && path[currPath] < numVert) {
                 currPath++;
-                if (currPath < vertices.size()) {
+                if (currPath < numVert) {
                     path[currPath] = 0;
                 }
             } else {
-                path[currPath] ++;
-                if (path[currPath] >= vertices.size()){
-                    path[currPath] = 0;
-                    currPath --;
-                    path[currPath] ++;
+                while (true) {
+                    path[currPath]++;
+                    if (path[currPath] == numVert && currPath > 0) {
+                        path[currPath] = 0;
+                        currPath--;
+                    } else break;
                 }
                 vertValid = true;
             }
