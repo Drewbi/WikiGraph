@@ -130,8 +130,6 @@ public class WikiGraph implements CITS2200Project {
 
     @Override
     public String[] getCenters() {
-        System.out.println(wikiGraph);
-        System.out.println(vertices);
         int minMax = vertices.size();
         ArrayList<Integer> middles = new ArrayList<>();
         for (int i = 0; i < vertices.size(); i ++) {
@@ -241,7 +239,7 @@ public class WikiGraph implements CITS2200Project {
             }
 
             // Check to see if vertex has edges that aren't just itself
-            if (vertValid && currPath < numVert) {
+            if (vertValid) {
                 ArrayList currConnections = wikiGraph.get(path[currPath]);
                 if (currConnections != null && currConnections.size() == 1) {
                         int onlyEdge = (int) currConnections.get(0);
@@ -263,13 +261,7 @@ public class WikiGraph implements CITS2200Project {
                 } else vertValid = false;
             }
 
-            // If all root nodes have been tried or if more than one pendant is found
-            if (currPath == 0 && path[currPath] == numVert || pendants.size() > 1) {
-                System.out.println("No solutions found");
-                return new String[0];
-            }
-
-            if (vertValid && path[currPath] < numVert) {
+            if (vertValid) {
                 currPath++;
                 if (currPath < numVert) {
                     path[currPath] = 0;
@@ -283,6 +275,12 @@ public class WikiGraph implements CITS2200Project {
                     } else break;
                 }
                 vertValid = true;
+            }
+
+            // If all root nodes have been tried or if more than one pendant is found
+            if (currPath == 0 && path[currPath] == numVert || pendants.size() > 1) {
+                System.out.println("No solutions found");
+                return new String[0];
             }
         }
         // Get result
