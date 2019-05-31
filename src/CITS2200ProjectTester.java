@@ -24,7 +24,7 @@ public class CITS2200ProjectTester {
 
 	public static void main(String[] args) {
 		// Change this to be the path to the graph file.
-		String GraphFileName = ("medium_graph.txt");
+		String GraphFileName = ("tester.txt");
 		// Create an instance of your implementation.
 		CITS2200Project proj = new WikiGraph();
 		// Load the graph into the project.

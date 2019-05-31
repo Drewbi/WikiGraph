@@ -28,8 +28,8 @@ public class WikiGraph implements CITS2200Project {
         int from = vertices.indexOf(urlFrom);
         int to = vertices.indexOf(urlTo);
         int numVert = vertices.size();
-        int[] colour = new int[numVert];
         int[] parent = new int[numVert];
+        int[] colour = new int[numVert];
         for (int i = 0; i < numVert; i ++){
             parent[i] = -1;
         }
@@ -71,13 +71,12 @@ public class WikiGraph implements CITS2200Project {
     private int getLongestPath(int root){
         int numVert = vertices.size();
         int[] parent = new int[numVert];
+        int[] colour = new int[numVert];
+        int[] distance = new int[numVert];
         for (int i = 0; i < numVert; i ++){
             parent[i] = -1;
         }
-        int[] colour = new int[numVert];
-        int[] distance = new int[numVert];
         ArrayDeque q = new ArrayDeque();
-
         if (wikiGraph.containsKey(root)) {
             q.add(root);
             while (!q.isEmpty()) {
@@ -113,7 +112,6 @@ public class WikiGraph implements CITS2200Project {
         for (int i = 0; i < vertices.size(); i ++) {
             int max = getLongestPath(i);
             if (max < minMax && max > 0) {
-                System.out.println("max of " + i + " is " + max);
                 minMax = max;
                 middles.clear();
                 middles.add(i);
@@ -134,8 +132,6 @@ public class WikiGraph implements CITS2200Project {
 
     @Override
     public String[] getHamiltonianPath() {
-        System.out.println("Vertices = " + vertices);
-        System.out.println("Graph = " + wikiGraph);
         int numVert = vertices.size();
         int[] path = new int[numVert];
         int currPath = 0;
