@@ -1,5 +1,8 @@
 import java.util.*;
 
+//@author Erin Bastholm, 22234922
+//@author Drew Alexander, 22423862
+
 public class WikiGraph implements CITS2200Project {
 
     private HashMap<Integer, ArrayList> wikiGraph = new HashMap<>();
